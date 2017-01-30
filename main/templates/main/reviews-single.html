@@ -48,6 +48,10 @@
 									</ul>
 								</div>
 							</div>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" src="{{ review.gameplay_video }}" allowfullscreen></iframe>
+                            </div>
+                            </br>
 							<p class="more" align="justify">{{ review.review | linebreaksbr }}</p>
 								
 							<div class="row margin-top-40">
@@ -162,7 +166,7 @@
 
 		$(document).ready(function() {
         // Configure/customize these variables.
-            var showChar = 2500;  // How many characters are shown by default
+            var showChar = 1500;  // How many characters are shown by default
             var ellipsestext = "...";
             var moretext = "Show more >";
             var lesstext = "Show less";
