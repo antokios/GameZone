@@ -1,0 +1,131 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>GameZone | {{ game.title }}</title>
+{% endblock %}
+
+{% block content %}
+
+	<!-- wrapper -->
+	<div id="wrapper">	
+		<section class="hero height-350 hero-game" style="background-image: url({{ game.image_bar.url }});">
+			<div class="hero-bg"></div>
+			<div class="container">
+				<div class="page-header">
+					<div class="page-title">{{ game.title }}</div>
+					<ol class="breadcrumb">
+						<li><a href="{% url 'home' %}" class="no-padding-left">Home</a></li>
+						<li><a href="{% url 'games' filter='All' %}">Games</a></li>
+						<li class="active">{{ game.title }}</li>
+					</ol>
+				</div>
+			</div>
+		</section>
+
+		<section class="bg-white no-padding hidden-xs border-bottom-1 border-grey-300" style="height: 54px">
+			<div class="tab-select text-center sticky">
+				<div class="container">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#"><i class="fa fa-gamepad"></i>{{ game.title }}</a></li>
+						<li><a href="{% url 'review_single' rev=game.id %}"><i class="fa fa-pencil"></i> Review</a></li>
+						<li><a href="{% url 'video_single' vid=game.id %}"><i class="fa fa-video-camera"></i> Videos</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<section class="bg-grey-50 padding-top-30">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 padding-right-20">
+						<div class="panel panel-default panel-post">
+							<div class="panel-body">
+								<div class="post">
+									<div class="post-header post-author">
+										<a href="{{ game.developer.official_page }}" class="author" data-toggle="tooltip" title="{{ game.developer }}" target="_blank"><img src="{{ game.developer.image.url }}" alt=""></a>
+										<div class="post-title">
+											<h3><a href="{{ game.official_page }}" target="_blank">{{ game.title }}</a></h3>
+											<ul class="post-meta">
+												<li><a href="{{ game.developer.official_page }}" target="_blank"><i class="fa fa-user"></i> {{ game.developer }}</a></li>
+												<li><i class="fa fa-calendar-o"></i> {{ game.released_date }}</li>
+											</ul>
+										</div>
+									</div>
+
+									<div class="embed-responsive embed-responsive-16by9 post-thumbnail">
+										<iframe class="embed-responsive-item" src="{{ game.official_trailer }}" allowfullscreen></iframe>
+                                    </div><p align="justify">{{ game.description }}</p></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 padding-left-20">
+						<div class="widget widget-game" style="background-image: url({{ game.image.url }});">
+							<div class="overlay">
+								<div class="title">{{ game.title }}</div>
+
+								<div class="bold text-uppercase">Category</div>
+                                {% if game.category_id == 1 %}
+                                    <span class="label label-success label-icon-left"><i class="ion-ios-game-controller-b-outline"></i>{{ game.category.desc }}</span>
+                                {% elif game.category_id == 2 %}
+                                    <span class="label label-primary label-icon-left"><i class="ion-ios-game-controller-b-outline"></i>{{ game.category.desc }}</span>
+                                {% elif game.category_id == 3 %}
+                                    <span class="label label-danger label-icon-left"><i class="ion-ios-game-controller-b-outline"></i>{{ game.category.desc }}</span>
+                                {% elif game.category_id == 4 %}
+                                    <span class="label label-warning label-icon-left"><i class="ion-ios-game-controller-b-outline"></i>{{ game.category.desc }}</span>
+                                {% elif game.category_id == 5 %}
+                                    <span class="label label-info label-icon-left"><i class="ion-ios-game-controller-b-outline"></i>{{ game.category.desc}}</span>
+                                {% endif %}
+
+								<div class="bold text-uppercase margin-top-40">Developer</div>
+								<span class="font-size-13">{{ game.developer }}</span>
+
+								<div class="bold text-uppercase margin-top-35">Release Date:</div>
+								<span class="font-size-13">{{ game.released_date }}</span>
+
+								<div class="description"><p align="justify">{{ game.short_description }}</p></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<!-- /#wrapper -->
+{% endblock %}
+	
+	<!-- Javascript -->
+{% block javascript %}
+	<script src="{% static 'plugins/ekko-lightbox/ekko-lightbox.min.js' %}"></script>
+	<script src="{% static 'plugins/owl-carousel/owl.carousel.min.js' %}"></script>
+	<script>
+	(function($) {
+	"use strict";
+		var owl = $(".owl-carousel");
+			 
+		owl.owlCarousel({
+			autoPlay: 3000,
+			items : 1, //4 items above 1000px browser width
+			itemsDesktop : [1000,3], //3 items between 1000px and 0
+			itemsTablet: [600,1], //1 items between 600 and 0
+			itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+		});
+		
+		$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) { 
+			event.preventDefault(); 
+			$(this).ekkoLightbox();
+		}); 
+		
+		$(window).scroll(function(){
+			if ($(this).scrollTop() > 350) {
+				$('body').addClass('fixed-tab');
+			} else {
+				$('body').removeClass('fixed-tab');
+			}
+		});
+	})(jQuery);
+	</script>
+{% endblock %}
+

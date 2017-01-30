@@ -1,0 +1,274 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>GameZone | Reviews</title>
+{% endblock %}
+
+{% block content %}
+	<!-- wrapper -->
+	<div id="wrapper">
+		<section class="no-padding bg-dark border-top-1 border-black">
+			<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding border-right-1 border-black hidden-xs">
+				<div class="post-block first">
+						<img src="{% static 'img/game-reviews/1.jpg' %}" alt="">
+						<div class="overlay">
+							<div class="caption">
+								<span class="label label-warning"><i class="ion-android-desktop"></i> PC</span>
+								<div class="post-title"><h4>Grand Theft Auto V</h4></div>
+								<p>Visit Los Santos and Blaine county.</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 no-padding-left no-padding border-right-1 border-black">
+				<div class="post-block">
+						<img src="{% static 'img/game-reviews/2.jpg' %}" alt="">
+						<div class="overlay">
+							<div class="caption">
+								<span class="label label-primary"><i class="ion-playstation"></i> PS4</span>
+								<div class="post-title"><h4>Batman: Arkham Knight</h4></div>
+								<p>The Epic Conclusion to the Arkham Trilogy.</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 no-padding-left no-padding hidden-xs">
+				<div class="post-block border-bottom-1 border-black">
+						<img src="{% static 'img/game-reviews/3.jpg' %}" alt="">
+						<div class="overlay">
+							<div class="caption">
+								<span class="label label-primary"><i class="ion-playstation"></i> PS4</span>
+								<div class="post-title"><h4>Metal Gear Solid V: Ground Zeroes</h4></div>
+								<p>Play as the legendary hero Snake and infiltrate a Cuban military base to rescue the hostages.</p>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="post-block">
+						<img src="{% static 'img/game-reviews/4.jpg' %}" alt="">
+						<div class="overlay">
+							<div class="caption">
+								<span class="label label-success"><i class="ion-xbox"></i> Xbox One</span>
+								<div class="post-title"><h4>Alien: Isolation</h4></div>
+								<p>How will you survive?</p>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</section>
+
+
+        <section class="border-bottom-1 border-grey-300 padding-30">
+			<div class="container text-center">
+                <h2 class="font-size-32 font-weight-500"><i class="ion-compose"></i> Reviews<span class="font-weight-300"> Library</span></h2>
+			</div>
+		</section>
+
+		<section class="bg-grey-50 padding-top-30 border-bottom-1 border-grey-200">
+			<div class="container">
+				<div class="row slider">
+					<div class="owl-carousel">
+                        {% for review in reviews %}
+						<div class="card card-list">
+							<div class="card-img">
+								<img src="{{ review.game.image.url }}" alt="">
+                                {% if review.total_score >= 80 %}
+								    <span class="label label-success">{{ review.total_score }} %</span>
+                                {% elif review.total_score > 50 %}
+                                    <span class="label label-warning">{{ review.total_score }} %</span>
+                                {% else %}
+                                    <span class="label label-danger">{{ review.total_score }} %</span>
+                                {% endif %}
+							</div>
+							<div class="caption">
+								<h4 class="card-title"><a href="{% url 'review_single' rev=review.game_id %}">{{ review.game.title }}</a></h4>
+								<p>{{ review.text }}</p>
+							</div>
+						</div>
+                        {% endfor %}
+					</div>
+					<a href="#" class="prev"><i class="fa fa-angle-left"></i></a>
+					<a href="#" class="next"><i class="fa fa-angle-right"></i></a>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<div class="container">
+				<div class="row sidebar">
+					<div class="col-md-9 leftside">
+						<div class="headline">
+							<h4 id="header">Latest Reviews</h4>
+						</div>
+                        {% if latest_reviews %}
+                        {% for rev in latest_reviews %}
+						<div class="post post-review">
+							<div class="row">
+								<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+									<div class="post-thumbnail">
+										<a href="{% url 'review_single' rev=rev.game.id %}"><img src="{{ rev.game.image.url }}" alt=""></a>
+									</div>
+								</div>
+								<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+									<div class="post-header">
+                                        {% if rev.total_score >= 80 %}
+								            <span class="label label-success">{{ rev.total_score }} %</span>
+                                        {% elif rev.total_score > 50 %}
+                                            <span class="label label-warning">{{ rev.total_score }} %</span>
+                                        {% else %}
+                                            <span class="label label-danger">{{ rev.total_score }} %</span>
+                                        {% endif %}
+										<div class="post-title">
+											<h4><a href="{% url 'review_single' rev=rev.game.id %}">{{ rev.title }}</a></h4>
+											<ul class="post-meta">
+                                                {% if rev.game.console == 'PC' %}
+                                                    <li><i class="ion-android-desktop"></i>PC</li>
+                                                {% elif rev.game.console == 'XboxOne' %}
+                                                    <li><i class="ion-xbox"></i>Xbox One</li>
+                                                {% elif rev.game.console == 'PS4' %}
+                                                    <li><i class="ion-playstation"></i>PS4</li>
+                                                {% endif %}
+												<li><i class="fa fa-calendar-o"></i> {{ rev.published_date }}</li>
+											</ul>
+										</div>
+									</div>
+									<span class="more">{{ rev.game.short_description }}</span>
+								</div>
+							</div>
+						</div>
+                        {% endfor %}
+                        {% else %}
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            </br></br></br></br>
+                                <h1 align="center">No results matching the search criteria...</h1>
+                            </div>
+                        {% endif %}
+					</div>
+
+					<div class="col-md-3 rightside">
+						<div class="widget widget-box">
+							<div class="title">Filter</div>
+							<form id="filterForm" type="get">
+								<div class="form-group">
+									<label for="title">Title:</label>
+									<input type="text" class="form-control" name="title" placeholder="Search reviews...">
+								</div>
+								<div class="form-group">
+									<label for="description">Release Date:</label>
+                                    <select class="selectpicker show-menu-arrow show-tick form-control" name="year" data-header="Select a year...">
+                                        <option value="All">All</option>
+                                        <option value="2017">2017</option>
+                                        <option value="2016">2016</option>
+                                        <option value="2015">2015</option>
+                                        <option value="2014">2014</option>
+                                        <option value="2013">2013</option>
+                                        <option value="2012">2012</option>
+                                        <option value="2011">2011</option>
+                                        <option value="2010">2010</option>
+                                    </select>
+								</div>
+								<div class="form-group">
+									<label for="description">Platform:</label>
+									<select class="selectpicker show-menu-arrow show-tick form-control" name="platform" data-header="Select a platform...">
+                                        <option value="All">All</option>
+                                        <option value="PS4">Playstation 4</option>
+                                        <option value="XboxOne">Xbox One</option>
+                                        <option value="PC">PC</option>
+                                    </select>
+								</div>
+                                <input type="submit" class="btn btn-primary" value="Filter Reviews" onload="changeHeader()">
+							</form>
+						</div>
+					</div>
+                </div>
+			</div>
+		</section>
+	</div>
+	<!-- /#wrapper -->
+{% endblock %}
+
+	<!-- Javascript -->
+{% block javascript %}
+    <script src="{% static 'plugins/bootstrap-select/bootstrap-select.min.js' %}"></script>
+	<script src="{% static 'plugins/owl-carousel/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'plugins/easypiechart/jquery.easypiechart.min.js' %}"></script>
+	<script>
+	(function($) {
+	"use strict";
+		var owl = $(".owl-carousel");
+
+		owl.owlCarousel({
+			items : 4, //4 items above 1000px browser width
+			itemsDesktop : [1000,3], //3 items between 1000px and 0
+			itemsTablet: [600,1], //1 items between 600 and 0
+			itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+		});
+
+		$(".next").click(function(){
+			owl.trigger('owl.next');
+			return false;
+		})
+		$(".prev").click(function(){
+			owl.trigger('owl.prev');
+			return false;
+		})
+
+		$('.chart').easyPieChart({
+			easing: 'easeOutBounce',
+			barColor: '#5eb404',
+			trackColor: '#e3e3e3',
+			onStep: function(from, to, percent) {
+				$(this.el).find('.percent').text(Math.round(percent));
+				}
+		});
+
+        $(document).ready(function() {
+        // Configure/customize these variables.
+            var showChar = 200;  // How many characters are shown by default
+            var ellipsestext = "...";
+            var moretext = "Show more >";
+            var lesstext = "Show less";
+
+
+        $('.more').each(function() {
+            var content = $(this).html();
+            if(content.length > showChar) {
+                var c = content.substr(0, showChar);
+                var h = content.substr(showChar, content.length - showChar);
+
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+            $(this).html(html);
+            }
+        });
+
+        $(".morelink").click(function(){
+            if($(this).hasClass("less")) {
+                $(this).removeClass("less");
+                $(this).html(moretext);
+            } else {
+                $(this).addClass("less");
+                $(this).html(lesstext);
+            }
+            $(this).parent().prev().toggle();
+            $(this).prev().toggle();
+            return false;
+            });
+        });
+	})(jQuery);
+
+    function changeHeader() {
+        var url = "http://127.0.0.1:8000/reviews/";
+        if (window.location.href != url) {
+            var element = document.getElementById("header");
+            element.innerHTML = "Filter Results";
+        }
+    };
+
+    window.onload = changeHeader();
+	</script>
+{% endblock %}

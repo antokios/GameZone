@@ -1,0 +1,81 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>GameZone | {{ review.game.title }} Videos</title>
+{% endblock %}
+
+{% block content %}
+
+	<!-- wrapper -->
+	<div id="wrapper">
+		<section class="hero height-350 hero-game" style="background-image: url({{ review.game.image_bar.url }});">
+			<div class="hero-bg"></div>
+				<div class="container">
+					<div class="page-header">
+						<div class="page-title">{{ review.game.title }} Videos</div>
+							<ol class="breadcrumb">
+								<li><a href="{% url 'home' %}" class="no-padding-left">Home</a></li>
+								<li><a href="#">Videos</a></li>
+								<li class="active">{{ review.game.title }} Videos</li>
+							</ol>
+					</div>
+				</div>
+		</section>
+
+		<section class="bg-white no-padding hidden-xs border-bottom-1 border-grey-300" style="height: 54px">
+			<div class="tab-select sticky text-center">
+				<div class="container">
+					<ul class="nav nav-tabs">
+						<li><a href="{% url 'game_single' pk=review.game.id %}"><i class="fa fa-gamepad"></i>{{ review.game.title }}</a></li>
+						<li><a href="{% url 'review_single' rev=review.game.id %}"><i class="fa fa-pencil"></i> Review</a></li>
+						<li class="active"><a href="#"><i class="fa fa-video-camera"></i> Videos</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<section class="bg-grey-50">
+			<div class="container">
+				<div class="card-group">
+					<div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+							<div class="card card-video">
+								<div class="embed-responsive embed-responsive-16by9">
+									<iframe class="embed-responsive-item" src="{{ review.game.official_trailer }}" allowfullscreen></iframe>
+								</div>
+								<div class="caption">
+									<h3 class="card-title">Official Trailer</h3>
+								</div>
+							</div>
+						</div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+							<div class="card card-video">
+								<div class="embed-responsive embed-responsive-16by9">
+									<iframe class="embed-responsive-item" src="{{ review.gameplay_video }}" allowfullscreen></iframe>
+								</div>
+								<div class="caption">
+									<h3 class="card-title">Gameplay Video</h3>
+								</div>
+							</div>
+						</div>
+                        {% for video in videos %}
+						<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+							<div class="card card-video">
+								<div class="embed-responsive embed-responsive-16by9">
+									<iframe class="embed-responsive-item" src="{{ video.link }}" allowfullscreen></iframe>
+								</div>
+								<div class="caption">
+									<h3 class="card-title">{{ video.title }}</h3>
+								</div>
+							</div>
+						</div>
+                        {% endfor %}
+					</div>
+				</div>
+
+			</div>
+		</section>
+	</div>
+	<!-- /#wrapper -->
+{% endblock %}

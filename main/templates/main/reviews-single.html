@@ -1,0 +1,198 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>GameZone | {{ review.game.title }}</title>
+{% endblock %}
+
+{% block content %}
+	<!-- wrapper -->
+	<div id="wrapper">	
+		<section class="hero height-350 hero-game" style="background-image: url({{ review.game.image_bar.url }});">
+			<div class="hero-bg"></div>
+			<div class="container">
+				<div class="page-header">
+					<div class="page-title">{{ review.game.title }} Review</div>
+					<ol class="breadcrumb">
+						<li><a href="{% url 'home' %}" class="no-padding-left">Home</a></li>
+						<li><a href="{% url 'reviews' %}">Reviews</a></li>
+						<li class="active">{{ review.game.title }} Review</li>
+					</ol>
+				</div>
+			</div>
+		</section>
+		
+		<section class="bg-white no-padding hidden-xs border-bottom-1 border-grey-300" style="height: 54px">
+			<div class="tab-select sticky text-center">
+				<div class="container">
+					<ul class="nav nav-tabs">
+						<li><a href="{% url 'game_single' pk=review.game_id %}"><i class="fa fa-gamepad"></i>{{ review.game.title }}</a></li>
+						<li class="active"><a href="#"><i class="fa fa-pencil"></i> Review</a></li>
+						<li><a href="{% url 'video_single' vid=review.game.id %}"><i class="fa fa-video-camera"></i> Videos</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+		
+		<section class="bg-grey-50">
+			<div class="container">
+				<div class="row sidebar">
+					<div class="col-md-8 leftside">
+						<div class="post post-single">
+							<div class="post-header">
+								<div class="post-title post-author">
+									<h2><a href="#">{{ review.title }}</a></h2>
+									<ul class="post-meta">
+										<li><a href= "{% url 'reviews'  %}?author={{ review.author_id }}" ><i class="fa fa-user"></i>{{ review.author }}</a></li>
+										<li><i class="fa fa-calendar-o"></i>{{ review.published_date }}</li>
+									</ul>
+								</div>
+							</div>
+							<p class="more" align="justify">{{ review.review | linebreaksbr }}</p>
+								
+							<div class="row margin-top-40">
+								<div class="col-md-8">
+                                        <p><i class="fa fa-share-alt-square"></i> Make sure to keep your friends updated!!!</p>
+								</div>
+								<div class="col-md-4 hidden-xs hidden-sm">
+									<ul class="share">	
+										<li><a href="#" class="btn btn-sm btn-social-icon btn-facebook" data-toggle="tooltip" title="Share on facebook"><i class="fa fa-facebook"></i></a></li>
+										<li><a href="#" class="btn btn-sm btn-social-icon btn-twitter" data-toggle="tooltip" title="Share on twitter"><i class="fa fa-twitter"></i></a></li>
+										<li><a href="#" class="btn btn-sm btn-social-icon btn-google-plus" data-toggle="tooltip" title="Share on google"><i class="fa fa-google-plus"></i></a></li>
+									</ul>	
+								</div>
+							</div>	
+						</div>
+					</div>
+					
+					
+					<div class="col-md-4 rightside">
+						<div class="widget widget-game" style="background-image: url({{ review.game.image.url }});">
+							<div class="overlay">
+								<div class="title">{{ review.game.title }}</div>
+								
+								<div class="chart-align">
+									<span class="chart" data-percent="{{ review.total_score }}"><span class="percent"></span></span>
+								</div>	
+								
+								<p class="progress-label">Gameplay <span>{{ review.gameplay_score }}%</span></p>
+								<div class="progress progress-animation progress-xs">
+									<div class="progress-bar progress-bar-success" aria-valuenow="{{ review.gameplay_score }}" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+								</div>
+												
+								<p class="progress-label">Graphics <span>{{ review.graphics_score }}%</span></p>
+								<div class="progress progress-animation progress-xs">
+									<div class="progress-bar progress-bar-danger" aria-valuenow="{{ review.graphics_score }}" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+								</div>
+												
+								<p class="progress-label">Story <span>{{ review.story_score }}%</span></p>
+								<div class="progress progress-animation progress-xs no-margin-bottom">
+									<div class="progress-bar progress-bar-warning" aria-valuenow="{{ review.story_score }}" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+								</div>
+								
+								<div class="bold text-uppercase margin-top-40">Developer</div>
+								<span class="font-size-13">{{ review.game.developer.name }}</span>
+								
+								
+                                <div class="description"><p align="justify">{{ review.game.short_description }}</p></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<!-- /#wrapper -->
+{% endblock %}	
+	<!-- Javascript -->
+{% block javascript %}
+	<script src="{% static 'plugins/ekko-lightbox/ekko-lightbox.min.js' %}"></script>
+	<script src="{% static 'plugins/owl-carousel/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'plugins/easypiechart/jquery.easypiechart.min.js' %}"></script>
+	<script>
+	(function($) {
+	"use strict";
+		var owl = $(".owl-carousel");
+			 
+		owl.owlCarousel({
+			autoPlay: 3000,
+			items : 1, //4 items above 1000px browser width
+			itemsDesktop : [1000,3], //3 items between 1000px and 0
+			itemsTablet: [600,1], //1 items between 600 and 0
+			itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+		});
+		
+		$(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) { 
+			event.preventDefault(); 
+			$(this).ekkoLightbox();
+		}); 
+		
+		$(window).scroll(function(){
+			if ($(this).scrollTop() > 400) {
+				$('body').addClass('fixed-tab');
+			} else {
+				$('body').removeClass('fixed-tab');
+			}
+		});
+		
+		$('.chart').easyPieChart({
+			easing: 'easeOutBounce',
+			barColor: '#5eb404',
+			trackColor: '#e3e3e3',
+			onStep: function(from, to, percent) {
+				$(this.el).find('.percent').text(Math.round(percent));
+				}
+		});
+
+		setTimeout(function(){
+			$('.progress-animation .progress-bar').each(function() {
+				var me = $(this);
+				var perc = me.attr("aria-valuenow");
+				var current_perc = 0;
+				var progress = setInterval(function() {
+					if (current_perc>=perc) {
+						clearInterval(progress);
+					} else {
+						current_perc +=1;
+						me.css('width', (current_perc)+'%');
+					}
+				}, 0);
+			});
+		},0);
+
+		$(document).ready(function() {
+        // Configure/customize these variables.
+            var showChar = 2500;  // How many characters are shown by default
+            var ellipsestext = "...";
+            var moretext = "Show more >";
+            var lesstext = "Show less";
+
+
+        $('.more').each(function() {
+            var content = $(this).html();
+            if(content.length > showChar) {
+                var c = content.substr(0, showChar);
+                var h = content.substr(showChar, content.length - showChar);
+
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+            $(this).html(html);
+            }
+        });
+
+        $(".morelink").click(function(){
+            if($(this).hasClass("less")) {
+                $(this).removeClass("less");
+                $(this).html(moretext);
+            } else {
+                $(this).addClass("less");
+                $(this).html(lesstext);
+            }
+            $(this).parent().prev().toggle();
+            $(this).prev().toggle();
+            return false;
+            });
+        });
+	})(jQuery);
+	</script>
+{% endblock %}

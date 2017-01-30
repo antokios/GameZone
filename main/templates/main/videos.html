@@ -1,0 +1,125 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>GameZone | Videos</title>
+{% endblock %}
+
+{% block content %}
+	<!-- wrapper -->
+	<div id="wrapper">
+        <div class="owl-carousel">
+            {% for game in games %}
+			<div class="post-carousel">
+				<a href="{% url 'game_single' pk=game.id %}" class="link">
+					<img src="{{ game.image.url }}" alt="">
+					<div class="overlay">
+						<div class="caption">
+                            {% if game.console == 'PC' %}
+                                <span class="label label-warning"><i class="ion-android-desktop"></i> {{ game.console }}</span>
+                            {% elif game.console == 'Xbox One' %}
+                                <span class="label label-success"><i class="ion-xbox"></i> {{ game.console }}</span>
+                            {% elif game.console == 'PS4' %}
+                                <span class="label label-primary"><i class="ion-playstation"></i> {{ game.console }}</span>
+                            {% endif %}
+                        <div class="post-title"><h4>{{ game.title }}</h4></div>
+						</div>
+					</div>
+				</a>
+			</div>
+            {% endfor %}
+		</div>
+
+        <section class="border-bottom-1 border-grey-300 padding-30">
+			<div class="container text-center">
+                <h2 class="font-size-32 font-weight-500"><i class="ion-ios-film"></i> Videos<span class="font-weight-300"> Library</span></h2>
+			</div>
+		</section>
+
+		<section class="padding-top-20 padding-bottom-20 border-bottom-1 border-grey-300">
+			<div class="container">
+				<div class="headline no-margin">
+					<h4>Videos</h4>
+					    <input type="search" id="userInput" class="form-control hidden-xs" placeholder="Search Video...">
+				</div>
+			</div>
+		</section>
+
+		<section class="bg-grey-50">
+			<div class="container">
+				<div class="card-group">
+					<div class="row">
+                    {% if videos %}
+						{% for video in videos %}
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+							<div class="card card-video">
+								<div class="card-img">
+									<div class="embed-responsive embed-responsive-16by9">
+									    <iframe class="embed-responsive-item" src="{{ video.link }}" allowfullscreen></iframe>
+								    </div>
+								</div>
+								<div class="caption">
+									<h3 class="card-title">{{ video.title }}</h3>
+								</div>
+							</div>
+						</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h1 align="center">No results matching the search criteria...</h1>
+                        </div>
+                    {% endif %}
+					</div>
+				</div>
+				
+				{% if videos.has_other_pages %}
+					<ul class="pagination margin-top-20">
+                    {% if videos.has_previous %}
+                        <li><a href="?page={{ videos.previous_page_number}}">Previous</a></li>
+                    {% else %}
+                        <li class="disabled"><span>Previous</span></li>
+                    {% endif %}
+                    {% for i in videos.paginator.page_range %}
+                        {% if videos.number == i %}
+                            <li class="active"><span>{{ i }}<span class="sr-only">(Current)</span></span></li>
+                        {% else %}
+                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if videos.has_next %}
+                        <li><a href="?page={{ videos.next_page_number}}">Next</a></li>
+                    {% else %}
+                        <li class="disabled"><span>Next</span></li>
+                    {% endif %}
+				</ul>
+				{% endif %}
+			</div>
+		</section>
+	</div>
+	<!-- /#wrapper -->
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'plugins/owl-carousel/owl.carousel.min.js' %}"></script>
+	<script>
+	(function($) {
+	"use strict";
+
+		$(".owl-carousel").owlCarousel({
+			autoPlay: true,
+			items : 4, //4 items above 1000px browser width
+			itemsDesktop : [1600,3], //3 items between 1000px and 0
+			itemsTablet: [940,1], //1 items between 600 and 0
+			itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+		});
+	})(jQuery);
+
+    $('#userInput').on('keyup', function(e) {
+    if (e.keyCode === 13) {
+        var userInput = document.getElementById('userInput').value;
+        var url = "{% url 'videos' filter='All' %}".replace(/All/, userInput);
+        window.location.href = url;
+    }
+    });
+	</script>
+{% endblock %}

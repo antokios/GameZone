@@ -1,0 +1,197 @@
+{% extends 'main/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    <title>GameZone</title>
+{% endblock %}
+
+{% block content %}
+	<!-- wrapper -->
+	<div id="wrapper">
+		<div id="full-carousel" class="ken-burns carousel slide full-carousel carousel-fade" data-ride="carousel">
+			<ol class="carousel-indicators">
+				<li data-target="#full-carousel" data-slide-to="0" class="active"></li>
+				<li data-target="#full-carousel" data-slide-to="1"></li>
+				<li data-target="#full-carousel" data-slide-to="2"></li>
+			</ol>
+			<div class="carousel-inner">
+				<div class="item active inactiveUntilOnLoad">
+					<img src="{% static 'img/home/1.jpg' %}" alt="">
+					<div class="container">
+						<div class="carousel-caption">
+							<h1 data-animation="animated animate1 bounceInDown">The Witcher 3: Wild Hunt</h1>
+							<p data-animation="animated animate7 fadeInUp">The world is in chaos. The air is thick with tension and the smoke of burnt villages.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="item">
+					<img src="{% static 'img/home/2.jpg' %}" alt="">
+					<div class="container">
+						<div class="carousel-caption">
+							<h1 data-animation="animated animate1 fadeInDown">The Last of Us: Remastered</h1>
+							<p data-animation="animated animate7 fadeIn">Survive an apocalypse on Earth in The Last of Us, a PlayStation 4-exclusive title by Naughty Dog.</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="item">
+					<img src="{% static 'img/home/3.jpg' %}" alt="">
+					<div class="container">
+						<div class="carousel-caption">
+							<h1 data-animation="animated animate1 fadeIn">Star Wars: Battlefront 3</h1>
+							<p data-animation="animated animate7 fadeIn">Galactic forces clash in this reboot of Star Wars Battlefront, the blockbuster shooter.</p>
+						</div>
+					</div>
+				</div>
+
+				<a class="left carousel-control" href="#full-carousel" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+				</a>
+				<a class="right carousel-control" href="#full-carousel" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+				</a>
+			</div>
+		</div>
+
+		<section class="bg-grey-50 border-bottom-1 border-grey-200 relative">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<div class="title outline">
+							<h4><i class="fa fa-gamepad"></i> Recent Games</h4>
+							<p>Discover newly released games and more...</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+                    {% for game in games %}
+					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+						<div class="card card-hover">
+							<div class="card-img">
+								<img src="{{ game.image.url }}" alt="">
+                                {% if game.console == 'PC' %}
+                                    <div class="category"><span class="label label-warning"><i class="ion-android-desktop"></i>PC</span></div>
+                                {% elif game.console == 'XboxOne' %}
+                                    <div class="category"><span class="label label-success"><i class="ion-xbox"></i>Xbox One</span></div>
+                                {% elif game.console == 'PS4' %}
+                                    <div class="category"><span class="label label-primary"><i class="ion-playstation"></i>PS4</span></div>
+                                {% endif %}
+							</div>
+							<div class="caption">
+								<h3 class="card-title"><a href="{% url 'game_single' pk=game.id %}">{{ game.title }}</a></h3>
+								<ul>
+									<li>{{ game.released_date }}</li>
+								</ul>
+								<span class="more">{{ game.short_description }}</span>
+							</div>
+						</div>
+					</div>
+                    {% endfor %}
+				</div>
+				<div class="text-center"><a href="{% url 'games' filter='All' %}" class="btn btn-primary btn-lg btn-shadow btn-rounded btn-icon-right margin-top-10 margin-bottom-20">Show More <i class="fa fa-angle-right"></i></a></div>
+			</div>
+		</section>
+
+		<section>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<div class="title outline">
+							<h4><i class="fa fa-pencil"></i> Recent Reviews</h4>
+							<p>Check out our latest reviews!!!</p>
+						</div>
+					</div>
+				</div>
+				<div class="row slider">
+					<div class="owl-carousel">
+                        {% for review in reviews %}
+						<div class="card card-list">
+							<div class="card-img">
+								<img src="{{ review.game.image.url }}" alt="">
+                                {% if review.total_score >= 80 %}
+								    <span class="label label-success">{{ review.total_score }} %</span>
+                                {% elif review.total_score > 50 %}
+                                    <span class="label label-warning">{{ review.total_score }} %</span>
+                                {% else %}
+                                    <span class="label label-danger">{{ review.total_score }} %</span>
+                                {% endif %}
+							</div>
+							<div class="caption">
+								<h4 class="card-title"><a href="{% url 'review_single' rev=review.game_id %}">{{ review.game.title }}</a></h4>
+							</div>
+						</div>
+                        {% endfor %}
+					</div>
+					<a href="#" class="prev"><i class="fa fa-angle-left"></i></a>
+					<a href="#" class="next"><i class="fa fa-angle-right"></i></a>
+				</div>
+			</div>
+		</section>
+
+	</div>
+	<!-- /#wrapper -->
+{% endblock content %}
+
+{% block javascript %}
+    <!-- Javascript -->
+    <script src="{% static 'plugins/owl-carousel/owl.carousel.min.js' %}"></script>
+	<script>
+	(function($) {
+	"use strict";
+		var owl = $(".owl-carousel");
+
+		owl.owlCarousel({
+			items : 4, //4 items above 1000px browser width
+			itemsDesktop : [1000,3], //3 items between 1000px and 0
+			itemsTablet: [600,1], //1 items between 600 and 0
+			itemsMobile : false // itemsMobile disabled - inherit from itemsTablet option
+		});
+
+		$(".next").click(function(){
+			owl.trigger('owl.next');
+			return false;
+		})
+		$(".prev").click(function(){
+			owl.trigger('owl.prev');
+			return false;
+		})
+
+        $(document).ready(function() {
+        // Configure/customize these variables.
+            var showChar = 100;  // How many characters are shown by default
+            var ellipsestext = "...";
+            var moretext = "Show more >";
+            var lesstext = "Show less";
+
+
+        $('.more').each(function() {
+            var content = $(this).html();
+            if(content.length > showChar) {
+                var c = content.substr(0, showChar);
+                var h = content.substr(showChar, content.length - showChar);
+
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+            $(this).html(html);
+            }
+        });
+
+        $(".morelink").click(function(){
+            if($(this).hasClass("less")) {
+                $(this).removeClass("less");
+                $(this).html(moretext);
+            } else {
+                $(this).addClass("less");
+                $(this).html(lesstext);
+            }
+            $(this).parent().prev().toggle();
+            $(this).prev().toggle();
+            return false;
+            });
+        });
+	})(jQuery);
+	</script>
+{% endblock %}
+
+
