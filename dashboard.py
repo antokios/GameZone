@@ -1,18 +1,26 @@
-# encoding: utf-8
-from django.core.urlresolvers import reverse
+"""
+This file was generated with the customdashboard management command and
+contains the class for the main dashboard.
+
+To activate your index dashboard add the following to your settings.py::
+    GRAPPELLI_INDEX_DASHBOARD = 'GameZone.dashboard.CustomIndexDashboard'
+"""
+
 from django.utils.translation import ugettext_lazy as _
-from jet.dashboard import modules
-from jet.dashboard.dashboard import Dashboard, AppIndexDashboard
-from jet.utils import get_admin_site_name
+from django.core.urlresolvers import reverse
+
+from grappelli.dashboard import modules, Dashboard
+from grappelli.dashboard.utils import get_admin_site_name
+
 
 class CustomIndexDashboard(Dashboard):
-    columns = 3
-
+    """
+    Custom index dashboard for www.
+    """
+    
     def init_with_context(self, context):
-        self.available_children.append(modules.LinkList)
-        self.available_children.append(modules.Feed)
-
         site_name = get_admin_site_name(context)
+
         # append a link list module for "quick links"
         self.children.append(modules.LinkList(
             _('Quick links'),
@@ -27,59 +35,66 @@ class CustomIndexDashboard(Dashboard):
             order=0
         ))
 
-        # append an app list module for "Applications"
-        self.children.append(modules.AppList(
-            _('Applications'),
-            exclude=('auth.*',),
-            column=0,
-            order=1
-        ))
-
-        # append an app list module for "Administration"
-        self.children.append(modules.AppList(
-            _('Administration'),
-            models=('auth.*',),
-            column=0,
-            order=0
-        ))
-
         # append a recent actions module
         self.children.append(modules.RecentActions(
             _('Recent Actions'),
-            10,
+            limit=5,
+            collapsible=False,
             column=1,
             order=1
         ))
 
-        # append a feed module
-        self.children.append(modules.Feed(
-            _('Latest Django News'),
-            feed_url='http://www.djangoproject.com/rss/weblog/',
-            limit=5,
+        # append an app list module for "Administration"
+        self.children.append(modules.ModelList(
+            _('Administration'),
+            models=('django.contrib.*',),
+            column=2,
+            order=0
+        ))
+
+        # append an app list module for "Applications"
+        self.children.append(modules.AppList(
+            _('Applications'),
+            css_classes=('collapse closed',),
+            exclude=('django.contrib.*',),
             column=2,
             order=1
         ))
+        
 
         # append another link list module for "support".
         self.children.append(modules.LinkList(
             _('Support'),
+            column=3,
+            order=0,
             children=[
                 {
-                    'title': _('Django documentation'),
+                    'title': _('Django Documentation'),
                     'url': 'http://docs.djangoproject.com/',
                     'external': True,
                 },
                 {
-                    'title': _('Django "django-users" mailing list'),
-                    'url': 'http://groups.google.com/group/django-users',
+                    'title': _('Grappelli Documentation'),
+                    'url': 'http://packages.python.org/django-grappelli/',
                     'external': True,
                 },
                 {
-                    'title': _('Django irc channel'),
-                    'url': 'irc://irc.freenode.net/django',
+                    'title': _('Grappelli Google-Code'),
+                    'url': 'http://code.google.com/p/django-grappelli/',
                     'external': True,
                 },
-            ],
-            column=2,
-            order=0
+            ]
         ))
+        
+        # append a feed module
+        self.children.append(modules.Feed(
+            _('Latest Django News'),
+            column=3,
+            order=1,
+            feed_url='http://www.djangoproject.com/rss/weblog/',
+            limit=5
+        ))
+        
+
+
+
